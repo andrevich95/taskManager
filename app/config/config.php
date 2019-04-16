@@ -5,7 +5,7 @@ return [
         'driver' => 'mysql',
         'host' => '127.0.0.1',
         'user' => 'root',
-        'password' => 'Cl371033',
+        'password' => '',
         'db' => 'my_track'
     ]
 ];
