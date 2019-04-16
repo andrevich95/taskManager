@@ -16,11 +16,11 @@
                 {% if user is not null %}
                     <p>
                         <a href="/task?id={{ task['ID'] }}">
-                            <button class="fa fa-edit"></button>
+                            <button class="btn btn-primary">Edit</button>
                         </a>
                         {% if not task['Status'] %}
                             <a href="/done?id={{ task['ID'] }}">
-                                <button class="fa fa-calendar-check-o"></button>
+                                <button class="btn btn-warning">Done</button>
                             </a>
                         {% endif %}
                     </p>

@@ -123,7 +123,7 @@ abstract class QueryAbstract{
         $table = is_null($table) ? $this->_table : $table;
 
         $sql = "INSERT INTO {$table} (". implode(',',$keys) . ") VALUES (" . implode(',', array_map(function ($value){ return "'{$value}'";}, $values)) . ")";
-        $this->_connection->query($sql)->execute();
+        $this->_connection->exec($sql);
     }
 
     /**

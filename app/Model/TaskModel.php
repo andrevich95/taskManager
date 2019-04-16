@@ -43,7 +43,7 @@ class TaskModel extends ModelAbstract {
     public function map($params){
         $validData = [];
 
-        if (isset($params['id']) && !is_null($params['id'])){
+        if (isset($params['id']) && !empty($params['id'])){
             $this->_id = intval(trim(htmlspecialchars($params['id'])));
         }
 
