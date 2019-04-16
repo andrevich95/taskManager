@@ -1,0 +1,24 @@
+{% spaceless %}
+    <form action="/login" method="post">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" name="name" class="form-control" id="name" aria-describedby="nameHelp" placeholder="Enter name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Password</label>
+            <input type="password" name="password" class="form-control" id="name" aria-describedby="passwordHelp" placeholder="Enter password" required>
+        </div>
+
+        <div class="form-group">
+            <div class="btn-toolbar">
+                <button class="btn btn-danger" type="reset">
+                    Reset
+                </button>
+                <button class="btn btn-success" type="submit">
+                    Login
+                </button>
+            </div>
+        </div>
+    </form>
+{% endspaceless %}

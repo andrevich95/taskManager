@@ -1,0 +1,10 @@
+paths:
+  migrations:
+    - migrations
+environments:
+  develop:
+    adapter: mysql
+    name: 'my_track'
+    user: 'root'
+    pass: ''
+    charset: utf8

@@ -1,0 +1,25 @@
+html{
+    background-color: #ffffff;
+}
+#content-wrapper{
+    position: relative;
+    min-height: 90vh;
+}
+
+#content-wrapper .content{
+    height: 100%;
+    padding-top: 5vh;
+}
+
+header, footer{
+    height: 5vh;
+}
+
+.login-btn{
+    position: absolute;
+    right: 10px;
+}
+
+button{
+    margin: 5px;
+}

@@ -1,0 +1,22 @@
+{% spaceless %}
+    <div class="task-list">
+        {% for task in tasks %}
+            <div class="jumbotron">
+                <h2>{{ task['Name'] }}</h2><br/>
+                <h6>{{ task['Email'] }}</h6><br/>
+                <p>{{ task['Description'] }}</p>
+                <p class="col-md-4 alert alert-info">Status:{{ task['Status'] ? 'done' : 'open' }}</p>
+                <p>
+                    <a href="/task?id={{ task['ID'] }}">
+                        <button class="fa fa-edit"></button>
+                    </a>
+                    {% if not task['Status'] %}
+                        <a href="/check?id={{ task['ID'] }}">
+                            <button class="fa fa-calendar-check-o"></button>
+                        </a>
+                    {% endif %}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+{% endspaceless %}
