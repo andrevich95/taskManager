@@ -14,6 +14,7 @@ try{
     $router->map('GET', '/', new \Core\Http\Route('task','index'));
     $router->map('GET', '/list', new \Core\Http\Route('task','index'));
     $router->map('GET', '/task', new \Core\Http\Route('task','form'));
+    $router->map('GET', '/done', new \Core\Http\Route('task','done'));
     $router->map('POST', '/task', new \Core\Http\Route('task','save'));
 
     \Core\Http\Dispatcher::dispatch($router);

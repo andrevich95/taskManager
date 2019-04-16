@@ -38,10 +38,29 @@ class UserQuery extends QueryAbstract{
     }
 
     /**
+     * @param $where
+     * @return mixed
+     */
+    public function findByCriteria($where){
+        foreach ($where as $key => $value){
+            $this->where($key, $value);
+        }
+        return $this->fetchOneCriteria();
+    }
+
+    /**
      * @return mixed
      */
     public function findAll()
     {
         // TODO: Implement findAll() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function count()
+    {
+        // TODO: Implement count() method.
     }
 }

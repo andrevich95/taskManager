@@ -31,10 +31,13 @@ abstract class ControllerAbstract {
             //'cache' => APP_DIR . 'cache'
         ]);
 
+        $data['request'] = $this->request();
+
         $body = $twig->render($view . '.html.twig', $data);
 
         $html = $twig->render('layout.html.twig',[
-            'body' => $body
+            'body' => $body,
+            'user' => $this->request()->user()
         ]);
 
         $this->_response->html($html);

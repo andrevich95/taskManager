@@ -22,6 +22,9 @@ abstract class QueryAbstract{
     /** @var integer */
     private $_offset;
 
+    /** @var array */
+    private $_order;
+
     /**
      * QueryAbstract constructor.
      * @throws \Exception
@@ -31,7 +34,15 @@ abstract class QueryAbstract{
         $this->_table = null;
         $this->_where = [];
         $this->_offset = null;
+        $this->_order = [];
         $this->_limit = null;
+    }
+
+    /**
+     * @return \PDO
+     */
+    protected function connection(){
+        return $this->_connection;
     }
 
     /**
@@ -46,22 +57,32 @@ abstract class QueryAbstract{
 
         if(!empty($this->_where)){
             $count = count($this->_where);
-            $where = "WHERE ";
+            $where = " WHERE ";
             foreach ($this->_where as $clause){
-                $where .= "{$clause['condition']} = {$clause['value']}";
+                $where .= "{$clause['condition']} = '{$clause['value']}'";
                 $where .= $count > 1 ? " AND " : "";
                 $count --;
             }
             $this->_query .= $where;
         }
 
-
-        if(!is_null($this->_offset)){
-            $this->_query .= "OFFSET {$this->_offset}";
+        if(!empty($this->_order)){
+            $count = count($this->_order);
+            $order = " ORDER BY ";
+            foreach ($this->_order as $value){
+                $order .= "{$value['column']} {$value['order']}";
+                $order .= $count > 1 ? ", " : "";
+                $count --;
+            }
+            $this->_query .= $order;
         }
 
         if(!is_null($this->_limit)){
-            $this->_query .= "LIMIT {$this->_limit}";
+            $this->_query .= " LIMIT {$this->_limit}";
+        }
+
+        if(!is_null($this->_offset)){
+            $this->_query .= " OFFSET {$this->_offset}";
         }
 
         return $this->_query;
@@ -73,6 +94,14 @@ abstract class QueryAbstract{
      */
     protected function fetchOne($id){
         return $this->_connection->query("SELECT * FROM {$this->_table} WHERE ID = {$id} LIMIT 1")->fetch();
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function fetchOneCriteria(){
+        $query = $this->build();
+        return $this->_connection->query($query)->fetch();
     }
 
     /**
@@ -98,9 +127,9 @@ abstract class QueryAbstract{
     }
 
     /**
-     * @param $table
-     * @param $where
-     * @param $data
+     * @param null $table
+     * @param array $data
+     * @param null $where
      */
     public function update($table = null, $data = [], $where = null){
         $update = [];
@@ -108,17 +137,17 @@ abstract class QueryAbstract{
         $table = is_null($table) ? $this->_table : $table;
 
         foreach ($data as $key => $value){
-            $update[] =  "$key = $value";
+            $update[] =  "$key = '$value'";
         }
 
         $condition = [];
         if (!is_null($where)){
             foreach ($where as $key => $value){
-                $condition[] =  "$key = $value";
+                $condition[] =  "$key = '$value'";
             }
         }
 
-        $sql = "UPDATE {$table} SET " . implode(', ', $update) . implode(', ', $condition);
+        $sql = "UPDATE {$table} SET " . implode(', ', $update) . " WHERE " . implode(', ', $condition);
         $this->_connection->query($sql)->execute();
     }
 
@@ -126,7 +155,7 @@ abstract class QueryAbstract{
      * @param $table
      * @return $this
      */
-    protected function from($table){
+    public function from($table){
         $this->_table = $table;
         return $this;
     }
@@ -136,7 +165,7 @@ abstract class QueryAbstract{
      * @param $value
      * @return $this
      */
-    protected function where($condition, $value){
+    public function where($condition, $value){
         $this->_where[] = ['condition' => $condition, 'value' => $value];
         return $this;
     }
@@ -145,7 +174,7 @@ abstract class QueryAbstract{
      * @param $num
      * @return $this
      */
-    protected function limit($num){
+    public function limit($num){
         $this->_limit = $num;
         return $this;
     }
@@ -154,10 +183,25 @@ abstract class QueryAbstract{
      * @param $num
      * @return $this
      */
-    protected function offset($num){
+    public function offset($num){
         $this->_offset = $num;
         return $this;
     }
+
+    /**
+     * @param $column
+     * @param $type
+     * @return $this
+     */
+    public function order($column, $type){
+        $this->_order[] = ['column' => $column, 'order' => $type];
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public abstract function count();
 
     /**
      * @param $id

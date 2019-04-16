@@ -95,7 +95,12 @@ class Request{
      */
     public function setCookie($cookie)
     {
-        setcookie('user_session_id', $cookie,time() + 100000);
+        setcookie('user_session_id', $cookie,time() + 10000);
+    }
+
+    public function unsetCookie(){
+        unset($_COOKIE['user_session_id']);
+        setcookie('user_session_id', null, -1, '/');
     }
 
 

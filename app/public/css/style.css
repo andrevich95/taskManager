@@ -8,7 +8,8 @@ html{
 
 #content-wrapper .content{
     height: 100%;
-    padding-top: 5vh;
+    padding-top: 7vh;
+    padding-bottom: 5vh;
 }
 
 header, footer{
@@ -17,9 +18,18 @@ header, footer{
 
 .login-btn{
     position: absolute;
-    right: 10px;
+    right: 10vw;
 }
 
 button{
     margin: 5px;
+}
+
+.pagination {
+    justify-content: center;
+}
+
+.logged-user{
+    color: rgba(0,0,0,.5);
+    padding: 15px;
 }

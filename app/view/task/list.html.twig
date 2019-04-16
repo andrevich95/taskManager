@@ -1,22 +1,42 @@
 {% spaceless %}
+    {% set user = request.user() %}
     <div class="task-list">
+        <p class="text-center">
+            <span>Order by:</span>
+            <a class="small mx-3" href="/list?order=Name">Name</a>
+            <a class="small mx-3" href="/list?order=Email">Email</a>
+            <a class="small mx-3" href="/list?order=Status">Status</a>
+        </p>
         {% for task in tasks %}
             <div class="jumbotron">
                 <h2>{{ task['Name'] }}</h2><br/>
                 <h6>{{ task['Email'] }}</h6><br/>
                 <p>{{ task['Description'] }}</p>
-                <p class="col-md-4 alert alert-info">Status:{{ task['Status'] ? 'done' : 'open' }}</p>
-                <p>
-                    <a href="/task?id={{ task['ID'] }}">
-                        <button class="fa fa-edit"></button>
-                    </a>
-                    {% if not task['Status'] %}
-                        <a href="/check?id={{ task['ID'] }}">
-                            <button class="fa fa-calendar-check-o"></button>
+                <p class="col-md-4 alert {{ task['Status'] ? 'alert-success' : 'alert-warning' }}">Status:{{ task['Status'] ? 'done' : 'open' }}</p>
+                {% if user is not null %}
+                    <p>
+                        <a href="/task?id={{ task['ID'] }}">
+                            <button class="fa fa-edit"></button>
                         </a>
-                    {% endif %}
-                </p>
+                        {% if not task['Status'] %}
+                            <a href="/done?id={{ task['ID'] }}">
+                                <button class="fa fa-calendar-check-o"></button>
+                            </a>
+                        {% endif %}
+                    </p>
+                {% endif %}
             </div>
         {% endfor %}
+        {% if pages > 1 %}
+            <div class="text-center">
+                <ul class="pagination">
+                    {% for i in range(1, pages) %}
+                        <li class="page-item">
+                            <a class="page-link" href="/list?page={{ i }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
     </div>
 {% endspaceless %}

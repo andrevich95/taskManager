@@ -10,6 +10,9 @@ use Core\Database\PDOConnection;
 
 class Task extends ControllerAbstract
 {
+
+    const LIMIT_PER_PAGE = 3;
+
     /**
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
@@ -17,15 +20,28 @@ class Task extends ControllerAbstract
      * @throws \Exception
      */
     public function actionIndex(){
-        $connection = PDOConnection::getConnection('default');
+        $page = $this->request()->paramsGet()['page'];
+        $order = $this->request()->paramsGet()['order'];
+
+        $offset = is_null($page) ? 0 : (intval($page) - 1)  * self::LIMIT_PER_PAGE;
 
         $taskQuery = new TaskQuery();
+
+        $taskQuery->limit(self::LIMIT_PER_PAGE);
+        $taskQuery->offset($offset);
+
+        if(!is_null($order)){
+            $taskQuery->order($order, 'ASC');
+        }
 
         $taskModel = new TaskModel($taskQuery);
         $tasks = $taskModel->fetchAll();
 
+        $pages = ceil($taskModel->count() / self::LIMIT_PER_PAGE);
+
         $this->render('/task/list', [
-            'tasks' => $tasks
+            'tasks' => $tasks,
+            'pages' => $pages
         ]);
     }
 
@@ -33,6 +49,7 @@ class Task extends ControllerAbstract
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     * @throws \Exception
      */
     public function actionForm(){
         $id = $this->request()->paramsGet()['id'];
@@ -60,6 +77,22 @@ class Task extends ControllerAbstract
 
         $taskModel = new TaskModel($taskQuery);
         $taskModel->map($params)->save();
+
+        $this->response()->redirect('/list');
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function actionDone(){
+        $data = $this->request()->paramsGet();
+
+        $params = ['id' => $data['id'], 'status' => true];
+
+        $taskQuery = new TaskQuery();
+
+        $taskModel = new TaskModel($taskQuery);
+        $taskModel->map($params)->update();
 
         $this->response()->redirect('/list');
     }

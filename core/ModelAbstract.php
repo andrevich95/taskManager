@@ -10,6 +10,11 @@ abstract class ModelAbstract{
     private $_query;
 
     /**
+     * @return mixed
+     */
+    protected abstract function resetQuery();
+
+    /**
      * @return QueryAbstract
      */
     public function getQuery()

@@ -53,4 +53,12 @@ class TaskQuery extends QueryAbstract{
 
         return $data;
     }
+
+    /**
+     * @return mixed
+     */
+    public function count()
+    {
+        return intval($this->connection()->query("SELECT COUNT(*) as cnt FROM task")->fetch()['cnt']);
+    }
 }

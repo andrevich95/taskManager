@@ -43,7 +43,7 @@ class TaskModel extends ModelAbstract {
     public function map($params){
         $validData = [];
 
-        if (isset($params['id'])){
+        if (isset($params['id']) && !is_null($params['id'])){
             $this->_id = intval(trim(htmlspecialchars($params['id'])));
         }
 
@@ -56,7 +56,7 @@ class TaskModel extends ModelAbstract {
         }
 
         if (isset($params['status'])){
-            $validData['Status'] = trim(htmlspecialchars($params['status']));
+            $validData['Status'] = boolval($params['status']);
         }
 
         if (isset($params['description'])){
@@ -68,13 +68,29 @@ class TaskModel extends ModelAbstract {
         return $this;
     }
 
+
+    /**
+     * @return int
+     * @throws \Exception
+     */
+    public function count(){
+        $query = $this->resetQuery();
+        return $query->count();
+    }
+
     /**
      * @return mixed
      */
     public function save(){
-        $query = $this->getQuery();
+        if(!is_null($this->_id)){
+            $this->update();
+        } else{
+            $query = $this->getQuery();
 
-        $query->insert(null, $this->_data);
+            $query->insert(null, $this->_data);
+        }
+
+        return true;
     }
 
     /**
@@ -83,7 +99,17 @@ class TaskModel extends ModelAbstract {
     public function update()
     {
         $query = $this->getQuery();
+        $where = ['ID' => $this->_id];
 
-        $query->update(null, $this->_data, $this->_id);
+        $query->update(null, $this->_data, $where);
+    }
+
+    /**
+     * @return TaskQuery|mixed
+     * @throws \Exception
+     */
+    protected function resetQuery()
+    {
+        return new TaskQuery();
     }
 }

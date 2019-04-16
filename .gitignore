@@ -1,5 +1,9 @@
 .idea
 .DS_Store
 composer.lock
+
+phinx.yml
+app/config/config.php
+
 vendor/*
 node_modules/*
