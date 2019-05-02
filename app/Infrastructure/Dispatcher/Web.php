@@ -1,42 +1,42 @@
 <?php
 
-namespace Core\Http;
+namespace App\Infrastructure\Dispatcher;
 
 use App\Controller\Service;
 use App\Model\Query\UserQuery;
 use App\Model\UserModel;
 use Core\ControllerAbstract;
-use Core\Router;
+use Core\Http\DispatcherAbstract;
+use Core\Http;
 
-class Dispatcher{
+class Web extends DispatcherAbstract
+{
 
     /**
-     * @param Router $router
+     * @param Http\Request $request
+     * @param Http\Response $response
+     * @return mixed|void
      * @throws \ReflectionException
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
      * @throws \Exception
      */
-    public static function dispatch(Router $router){
-        $request = new Request();
-        $response = new Response();
-        /** @var Route $currentRoute */
-        $currentRoute = $router->get($request->url(), $request->method());
+    protected function execute($request, $response)
+    {
+        /** @var Http\Route $currentRoute */
+        $currentRoute = $this->_router->get($request->url(), $request->method());
 
         $user = self::authenticate($request);
 
-        if(!is_null($user)){
+        if (!is_null($user)) {
             $request->setUser($user);
         }
 
-        if (is_null($currentRoute)){
+        if (is_null($currentRoute)) {
             $service = new Service($request, $response);
             $service->actionNotFound();
             $response->send();
-        } else{
+        } else {
             $controller = $currentRoute->controller();
-            $act = 'action'.$currentRoute->action();
+            $act = 'action' . $currentRoute->action();
 
             /** @var \ReflectionClass $rf */
             $rf = new \ReflectionClass("App\\Controller\\{$controller}");
@@ -49,23 +49,25 @@ class Dispatcher{
         }
     }
 
+
     /**
-     * @param Request $request
-     * @return User|null
+     * @param Http\Request $request
+     * @return |null
      * @throws \Exception
      */
-    private static function authenticate(Request $request){
+    private static function authenticate(Http\Request $request)
+    {
         $session = $request->getCookie();
 
-        if(is_null($session))
+        if (is_null($session))
             return null;
         $userQuery = new UserQuery();
 
         $userModel = new UserModel($userQuery);
         $user = $userModel->fetchOneBySession($session);
 
-        if(!is_null($user)){
-            return User::create($user);
+        if (!is_null($user)) {
+            return Http\User::create($user);
         }
 
         return null;

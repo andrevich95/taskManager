@@ -17,7 +17,7 @@ try{
     $router->map('GET', '/done', new \Core\Http\Route('task','done'));
     $router->map('POST', '/task', new \Core\Http\Route('task','save'));
 
-    \Core\Http\Dispatcher::dispatch($router);
+    \Core\Http\DispatcherAbstract::dispatch($router, 'web');
 } catch (Exception $e){
     echo '<h1>Exception ' . $e->getCode() . '</h1><span>' . $e->getMessage() . '.</span>' .
         '<b>Stack trace</b>' . $e->getTraceAsString();
