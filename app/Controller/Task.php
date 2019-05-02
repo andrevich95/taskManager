@@ -22,16 +22,19 @@ class Task extends ControllerAbstract
     public function actionIndex(){
         $page = $this->request()->paramsGet()['page'];
         $order = $this->request()->paramsGet()['order'];
+        $type = $this->request()->paramsGet()['type'];
 
-        $offset = is_null($page) ? 0 : (intval($page) - 1)  * self::LIMIT_PER_PAGE;
+        $type = empty($type) ? 'ASC' : $type;
+
+        $offset = empty($page) ? 0 : (intval($page) - 1)  * self::LIMIT_PER_PAGE;
 
         $taskQuery = new TaskQuery();
 
         $taskQuery->limit(self::LIMIT_PER_PAGE);
         $taskQuery->offset($offset);
 
-        if(!is_null($order)){
-            $taskQuery->order($order, 'ASC');
+        if(!empty($order)){
+            $taskQuery->order($order, $type);
         }
 
         $taskModel = new TaskModel($taskQuery);
@@ -41,7 +44,10 @@ class Task extends ControllerAbstract
 
         $this->render('/task/list', [
             'tasks' => $tasks,
-            'pages' => $pages
+            'pages' => $pages,
+            'order' => $order,
+            'page' => $page,
+            'type' => $type
         ]);
     }
 
@@ -95,5 +101,13 @@ class Task extends ControllerAbstract
         $taskModel->map($params)->update();
 
         $this->response()->redirect('/list');
+    }
+
+    /**
+     * @param $type
+     * @return string
+     */
+    private function opositeType($type){
+        return $type === 'ASC' ? 'DESC' : 'ASC';
     }
 }

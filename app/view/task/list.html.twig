@@ -2,10 +2,16 @@
     {% set user = request.user() %}
     <div class="task-list">
         <p class="text-center">
-            <span>Order by:</span>
-            <a class="small mx-3" href="/list?order=Name">Name</a>
-            <a class="small mx-3" href="/list?order=Email">Email</a>
-            <a class="small mx-3" href="/list?order=Status">Status</a>
+            <span>Order by (ascending):</span>
+            <a class="small mx-3" href="/list?order=Name&page={{ page }}&type=ASC">Name</a>
+            <a class="small mx-3" href="/list?order=Email&page={{ page }}&type=ASC">Email</a>
+            <a class="small mx-3" href="/list?order=Status&page={{ page }}&type=ASC">Status</a>
+        </p>
+        <p class="text-center">
+            <span>Order by (descending):</span>
+            <a class="small mx-3" href="/list?order=Name&page={{ page }}&type=DESC">Name</a>
+            <a class="small mx-3" href="/list?order=Email&page={{ page }}&type=DESC">Email</a>
+            <a class="small mx-3" href="/list?order=Status&page={{ page }}&type=DESC">Status</a>
         </p>
         {% for task in tasks %}
             <div class="jumbotron">
@@ -32,7 +38,7 @@
                 <ul class="pagination">
                     {% for i in range(1, pages) %}
                         <li class="page-item">
-                            <a class="page-link" href="/list?page={{ i }}">{{ i }}</a>
+                            <a class="page-link" href="/list?page={{ i }}&order={{ order }}&type={{ type }}">{{ i }}</a>
                         </li>
                     {% endfor %}
                 </ul>
